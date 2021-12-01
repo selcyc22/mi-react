@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import moment from "moment";
-import axios from "axios";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import PortfolioContainer from "./portfolio/portfolio-container";
@@ -12,30 +10,15 @@ import blog from "./pages/blog";
 import PortfolioDetail from "./portfolio/portfolio-detail";
 import NoMatch from "./pages/no-match";
 
-export default class App extends Component {
-  constructor(){
-    super();
+import "./style/main.scss";
 
-    this.getPortfolioItems = this.getPortfolioItems.bind(this);
-  }
-  getPortfolioItems(){
-    axios
-      .get("https://selcyc.devcamp.space/portfolio/portfolio_items5")
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+export default class App extends Component {
+
   render() {
-    this.getPortfolioItems();
     return (
-      <div className="app">
+      <div className="container">
         <Router>
           <div>
-            <h1>Jordan Hudgens Portfolio</h1>
-            <div>{moment().format("MMMM Do YYYY, h:mm:ss a")}</div>
             <NavigationContainer />
 
             <Switch>

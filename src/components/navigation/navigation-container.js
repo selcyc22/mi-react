@@ -60,7 +60,8 @@ const NavigationComponent = (props) => {
         <div className="right-side">
           God thats my name im God 
 
-          {props.loggedInStatus === "LOGGED_IN" ? <a onClick={handleSignOut}>
+          {props.loggedInStatus === "LOGGED_IN" ? 
+            <a onClick={handleSignOut}>
             <FontAwesomeIcon icon="sign-out-alt" />
           </a> : null}
         </div>

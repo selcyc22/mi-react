@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from 'axios';
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTrash, faSignOutAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faSignOutAlt, faEdit, faGhost, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import PortfolioContainer from "./portfolio/portfolio-container";
 import NavigationContainer from "./navigation/navigation-container";
@@ -10,6 +10,7 @@ import Home from "./pages/home";
 import About from "./pages/about";
 import contact from "./pages/contact";
 import blog from "./pages/blog";
+import BlogDetail from "./pages/blog-detail";
 import PortfolioDetail from "./portfolio/portfolio-detail";
 import Auth from "./pages/auth";
 import NoMatch from "./pages/no-match";
@@ -17,7 +18,7 @@ import PortfolioManager from "./pages/portfolio-manager";
 
 import "./style/main.scss";
 
-library.add(faTrash, faSignOutAlt, faEdit);
+library.add(faTrash, faSignOutAlt, faEdit, faGhost, faPlusCircle);
 
 export default class App extends Component {
   constructor(props) {
@@ -36,7 +37,6 @@ export default class App extends Component {
       loggedInStatus:"LOGGED_IN"
     });
   }
-
   handleUnsuccesfulLogin(){
     this.setState({
       loggedInStatus: "NOT_LOGGED_IN"
@@ -99,7 +99,14 @@ export default class App extends Component {
               <Route path="/auth" render={props => (<Auth {...props} handleSuccesfulLogin={this.handleSuccesfulLogin}handleUnsuccesfulLogin={this.handleUnsuccesfulLogin}/>)} />
               <Route path="/about.js" component={About} />
               <Route path="/contact" component={contact} />
-              <Route path="/blog" component={blog} />
+              <Route 
+                path="/blog" 
+                component={blog} 
+                render={props => (
+                <blog {...props} loggedInStatus={this.state.loggedInStatus} />
+              )}
+              />
+              <Route path="/b/:slug" component={BlogDetail} />
 
               {this.state.loggedInStatus === "LOGGED_IN" ? this.authorizedPages(): null}
 

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BlogItem from "../blog/bolg-item";
 import BlogModal from "../modals/blog-modal";
+import Icons from "../../helpers/icons";
 
 class BLog extends Component {
   constructor(){

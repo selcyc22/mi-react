@@ -2,16 +2,15 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from 'axios';
 
-import PortfolioContainer from "./portfolio/portfolio-container";
 import NavigationContainer from "./navigation/navigation-container";
 import Home from "./pages/home";
-import About from "./pages/about";
 import contact from "./pages/contact";
 import Blog from "./pages/blog";
 import BlogDetail from "./pages/blog-detail";
 import PortfolioDetail from "./portfolio/portfolio-detail";
 import Auth from "./pages/auth";
 import NoMatch from "./pages/no-match";
+import About from "./pages/about";
 import PortfolioManager from "./pages/portfolio-manager";
 import Icons from "../helpers/icons";
 import "./style/main.scss";
@@ -96,7 +95,7 @@ export default class App extends Component {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/auth" render={props => (<Auth {...props} handleSuccesfulLogin={this.handleSuccesfulLogin}handleUnsuccesfulLogin={this.handleUnsuccesfulLogin}/>)} />
-              <Route path="/about.js" component={About} />
+              <Route path="/about-me" component={About} />
               <Route path="/contact" component={contact} />
               <Route 
                 path="/blog" 
@@ -104,7 +103,12 @@ export default class App extends Component {
                 <Blog {...props} loggedInStatus={this.state.loggedInStatus} />
               )}
               />
-              <Route path="/b/:slug" component={BlogDetail} />
+              <Route
+                path="/b/:slug"
+                render={props => (
+                  <BlogDetail {...props} loggedInStatus={this.state.loggedInStatus} />
+                )}
+              />
 
               {this.state.loggedInStatus === "LOGGED_IN" ? this.authorizedPages(): null}
 

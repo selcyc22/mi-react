@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
-import {EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
 export default class RichTextEditor extends Component {
     constructor(props) {
-        super(props);
+        super(props)
 
         this.state = {
             editorState: EditorState.createEmpty()
-        };
+        }
 
-        this.onEditorStateChange = this.onEditorStateChange.bind(this);
-        this.getBase64 = this.getBase64.bind(this);
-        this.uploadFile = this.uploadFile.bind(this);
-        
+        this.onEditorStateChange = this.onEditorStateChange.bind(this)
+        this.uploadFile = this.uploadFile.bind(this)
+        this.getBase64 = this.getBase64.bind(this)
+    }
+
+    componentWillMount() {
+        if (this.props.editMode && this.props.contentToEdit) {
+            const blockFromHtml = htmlToDraft(this.props.contentToEdit)
+            const { contentBlocks, entityMap } = blockFromHtml
+            const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+            const editorState = EditorState.createWithContent(contentState)
+            this.setState({editorState})
+        }
     }
 
     onEditorStateChange(editorState) {
@@ -43,28 +52,28 @@ export default class RichTextEditor extends Component {
     render() {
         return (
             <div>
-                <h3>
+                <h1>
                     <Editor
                         editorState={this.state.editorState}
-                        wrapperClassName="demo-wrapper"
-                        editorClassname="demo-editor"
+                        wrapperClassName='demo-wrapper'
+                        editorClassName='demo-editor'
                         onEditorStateChange={this.onEditorStateChange}
                         toolbar={{
-                            inline: {inDropdown: true },
-                            list: { inDropdown: true },
-                            textAlign: { inDropdown: true },
-                            link: { inDropdown: true },
-                            history: { inDropdown: true },
+                            inline: {inDropdown: true},
+                            list: {inDropdown: true},
+                            textAlign: {inDropdown: true},
+                            link: {inDropdown: true},
+                            history: {inDropdown: true},
                             image: {
                                 uploadCallback: this.uploadFile,
-                                alt: { present: true, mandatory: false },
+                                alt: {present: true, mandatory: false},
                                 previewImage: true,
                                 inputAccept: "image/gif,image/jpeg,image/jpg,image/png,image/svg"
                             }
                         }}
                     />
-                </h3>
+                </h1>
             </div>
-        );
+        )
     }
 }

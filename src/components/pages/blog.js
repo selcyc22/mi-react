@@ -1,14 +1,12 @@
-import React, { Component } from "react";
-import {Link} from 'react-router-dom';
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BlogItem from "../blog/bolg-item";
 import BlogModal from "../modals/blog-modal";
-import Icons from "../../helpers/icons";
 
-class BLog extends Component {
-  constructor(){
-    super();
+class Blog extends React.Component {
+  constructor() {
+    super()
 
     this.state = {
       blogItems: [],
@@ -16,43 +14,42 @@ class BLog extends Component {
       currentPage: 0,
       isLoading: true,
       blogModalIsOpen: false
-    };
+    }
 
     this.getBlogItems = this.getBlogItems.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    window.addEventListener("scroll", this.onScroll, false);
-    this.handleNewBlogClick = this.handleNewBlogClick.bind(this);
-    this.handleModalClose = this.handleModalClose.bind(this);
-    this.handleSuccessfullNewBlogSubmission = this.handleSuccessfullNewBlogSubmission.bind(this);
+    this.onScroll = this.onScroll.bind(this)
+    window.addEventListener("scroll", this.onScroll, false)
+    this.handleNewBlogClick = this.handleNewBlogClick.bind(this)
+    this.handleModelClose = this.handleModelClose.bind(this)
+    this.handleSuccesfullNewBlogSubmision = this.handleSuccesfullNewBlogSubmision.bind(this)
   }
 
-  handleSuccessfullNewBlogSubmission(blog) {
+  handleSuccesfullNewBlogSubmision(blog) {
     this.setState({
       blogModalIsOpen: false,
       blogItems: [blog].concat(this.state.blogItems)
-    });
+    })
   }
 
-  handleModalClose() {
+  handleModelClose() {
     this.setState({
       blogModalIsOpen: false
-    });
+    })
   }
 
   handleNewBlogClick() {
     this.setState({
       blogModalIsOpen: true
-    });
+    })
   }
 
   onScroll() {
-
-    if(this.state.isLoading || this.state.blogItems.length === this.state.totalCount) {
+    if (this.state.isLoading || this.state.blogItems.length === this.state.totalCount) {
       return;
     }
 
 
-    if (window.innerHeight + document.documentElement.scrollTop +1>= document.documentElement.offsetHeight) {
+    if (window.innerHeight + document.documentElement.scrollTop +1 >= document.documentElement.offsetHeight) {
       this.getBlogItems();
     }
   }
@@ -60,20 +57,17 @@ class BLog extends Component {
   getBlogItems() {
     this.setState({
       currentPage: this.state.currentPage + 1
-    });
-
-    axios.get(`https://selcyc.devcamp.space/portfolio/portfolio_blogs?page=${this.state.currentPage}`, {withCredentials: true}
-    ).then(response => {
+    })
+    axios.get(`https://selcyc.devcamp.space/portfolio/portfolio_blogs?page=${this.state.currentPage}`, {withCredentials: true}).then(response =>{
       console.log("getting", response.data);
       this.setState({
         blogItems: this.state.blogItems.concat(response.data.portfolio_blogs),
-        totalCount:response.data.meta.total_records,
+        totalCount: response.data.meta.total_records,
         isLoading: false
-      });
+      })
+  }).catch(error => {
+      console.log("getBlogItems error", error);
     })
-    .catch(error => {
-      console.log("error getBlogItems", error);
-    });
   }
 
   componentWillMount() {
@@ -81,38 +75,42 @@ class BLog extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.onScroll, false);
+    window.removeEventListener("scroll", this.onScroll, false)
   }
 
-  render(){
+  render() {
     const blogRecords = this.state.blogItems.map(blogItem => {
       return <BlogItem key={blogItem.id} blogItem={blogItem} />
-    });
+    })
 
     return (
       <div className="blog-container">
-        <BlogModal handleSuccessfullNewBlogSubmission={this.handleSuccessfullNewBlogSubmission}
-        handleModalClose={this.handleModalClose} modalIsOpen={this.state.blogModalIsOpen} />
+          <BlogModal
+            handleSuccesfullNewBlogSubmision={this.handleSuccesfullNewBlogSubmision}
+            handleModelClose={this.handleModelClose}
+            modalIsOpen={this.state.blogModalIsOpen} 
+          />
 
-         
-          <div className="new-blog-link">
-            {this.props.loggedInStatus === "LOGGED_IN" ?
+          {this.props.loggedInStatus === "LOGGED_IN" ? (
+            <div className="new-blog-link">
               <a onClick={this.handleNewBlogClick}>
-                <FontAwesomeIcon icon="plus-circle" /> 
+                <FontAwesomeIcon icon="plus-circle" />
               </a>
-            : null}
-          </div>
+            </div>
+          ) : true }
 
-        <div className="content-container">{blogRecords}</div>
+        <div className="content-container">
+          {blogRecords}
+        </div>
 
         {this.state.isLoading ? (
-          <div className="content-loder">
-            <FontAwesomeIcon icon="ghost" spin />
+          <div className="content-loader">
+            <FontAwesomeIcon icon='ghost' spin/>
           </div>
         ) : null }
       </div>
-    );
+    )
   }
 }
 
-export default BLog;
+export default Blog;

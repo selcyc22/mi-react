@@ -22,6 +22,21 @@ class Blog extends React.Component {
     this.handleNewBlogClick = this.handleNewBlogClick.bind(this)
     this.handleModelClose = this.handleModelClose.bind(this)
     this.handleSuccesfullNewBlogSubmision = this.handleSuccesfullNewBlogSubmision.bind(this)
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleDeleteClick(blog) {
+    axios.delete(`https://api.devcamp.space/portfolio/portfolio_blogs/${blog.id}`, {withCredentials: true }).then(response => {
+      this.setState({
+        blogItems: this.state.blogItems.filter(blogItem => {
+          return blog.id !== blogItem.id;
+        })
+      });
+
+      return response.data;
+    }).catch(error => {
+      console.log("delete blog error", error);
+    });
   }
 
   handleSuccesfullNewBlogSubmision(blog) {
@@ -80,6 +95,16 @@ class Blog extends React.Component {
 
   render() {
     const blogRecords = this.state.blogItems.map(blogItem => {
+      if (this.props.loggedInStatus === "LOGGED_IN") {
+        return (
+          <div key={blogItem.id} className="admin-blog-wrapper">
+            <BlogItem blogItem={blogItem} />
+            <a onClick={() => this.handleDeleteClick(blogItem)}>
+              <FontAwesomeIcon icon="trash" />
+            </a>
+          </div>
+        )
+      }
       return <BlogItem key={blogItem.id} blogItem={blogItem} />
     })
 
